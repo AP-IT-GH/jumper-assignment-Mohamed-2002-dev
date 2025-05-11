@@ -1,8 +1,25 @@
-Library/
-Logs/
-Temp/
-Packages/
-UserSettings/
-.vs/
+# Unity specific
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
 *.csproj
+*.unityproj
 *.sln
+*.user
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+.DS_Store
+
+# Ignore files created by Unity when exporting to Android/iOS
+# These folders might be used by Unity or when building apps
+[Uu]nityGenerated/

@@ -16,7 +16,7 @@ public class CubeAgent : Agent
     {
         Initialisatie();
 
-        transform.position = new Vector3(0f, 1f, 0f); // Zet de agent terug naar de startpositie
+        transform.position = new Vector3(0f, 1f, 0f);
         agentRb.velocity = Vector3.zero;
         transform.SetParent(null);
         isGrounded = true;
@@ -63,32 +63,38 @@ public class CubeAgent : Agent
     {
         float jumpCommand = actions.ContinuousActions[0];
 
-        // Hier checken we of de agent te vroeg springt op basis van een minimum afstand (bijv. 2.7)
-        if (jumpCommand > 0.5f && isGrounded && transform.position.y < 2.7f)
+        // Springen als de jumpCommand groter is dan 0.5f en het agent is op de grond
+        if (jumpCommand > 0.5f && isGrounded)
         {
             agentRb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
             isGrounded = false;
-            AddReward(1f); // Beloning voor springen
-            Debug.Log("Beloning voor springen: +1");
+
+            // Controleer of het agent over een obstakel springt en geef een reward
+            if (obstacleInstance != null && transform.position.z > obstacleInstance.transform.position.z - 1f && transform.position.z < obstacleInstance.transform.position.z + 1f)
+            {
+                AddReward(0.5f); // Rewards wanneer het agent succesvol over het obstakel springt
+                Debug.Log("Succesvol gesprongen: +0.5f");
+            }
+        }
+        // Onnodig springen op een afstand van meer dan 4 een negatieve reward
+        else if (jumpCommand > 0.5f && Vector3.Distance(transform.position, obstacleInstance.transform.position) > 4f)
+        {
+            AddReward(-0.5f); // Straf voor onnodig springen op grote afstand van het obstakel
+            Debug.Log("Onnodig springen met positie: " + transform.position);
         }
 
-        // Controleer of de agent onder de drempel valt
+        // Eindig de episode als het agent valt
         if (transform.position.y < -1f)
         {
-            // Zet de agent terug naar de beginpositie
-            transform.position = new Vector3(0f, 1f, 0f);
-            agentRb.velocity = Vector3.zero;
-            isGrounded = true;
+            AddReward(-1f); // Negatieve reward voor vallen
+            Debug.Log("Agent gevallen: -1f");
+            EndEpisode();
+        }
 
-            // Spawnen van nieuwe obstakels
-            if (obstacleInstance != null)
-            {
-                Destroy(obstacleInstance);
-            }
-            SpawnObstacle();
-
-            AddReward(-1f); // Beloning voor vallen
-            Debug.Log("Beloning voor vallen van platform: -1");
+        // Geef een kleine negatieve straf voor niets doen, bijvoorbeeld als het agent te lang stil blijft
+        if (jumpCommand <= 0.5f)
+        {
+            AddReward(-0.001f); // Negatieve beloning voor niet springen
         }
     }
 
@@ -111,9 +117,6 @@ public class CubeAgent : Agent
         if (other.CompareTag("Obstacle"))
         {
             transform.SetParent(other.transform);
-            // Deze beloning is verwijderd
-            // AddReward(-0.5f); // Beloning voor raken van obstakel
-            Debug.Log("Raakte obstakel, maar geen beloning meer.");
         }
     }
 
@@ -130,11 +133,7 @@ public class CubeAgent : Agent
     {
         if (obstacleInstance == null)
         {
-            SpawnObstacle(); // Spawnen van een nieuw obstakel als de oude vernietigd is
+            SpawnObstacle();
         }
-
-        // Geen actie (niets doen)
-        AddReward(-0.001f); // Beloning voor niks doen
-        // Geen debug log voor niks doen
     }
 }

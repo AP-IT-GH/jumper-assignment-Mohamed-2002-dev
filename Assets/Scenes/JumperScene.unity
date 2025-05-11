@@ -654,7 +654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 6
+    VectorObservationSize: 9
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -682,6 +682,10 @@ PrefabInstance:
     - target: {fileID: 1598086995597418486, guid: f98a714c3cd59564e9937002387b38a2, type: 3}
       propertyPath: m_Name
       value: Obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2540793840588223118, guid: f98a714c3cd59564e9937002387b38a2, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5056048678349610395, guid: f98a714c3cd59564e9937002387b38a2, type: 3}
       propertyPath: m_LocalPosition.x

@@ -68,7 +68,7 @@ public class CubeAgent : Agent
                 if (zDistance < 1f)
                 {
                     AddReward(0.5f); 
-                    Debug.Log("Beloning +0.5 voor succesvolle sprong, Z afstand: " + zDistance);
+                    Debug.Log("Beloning +0.5 voor succesvolle sprong, Z afstand");
                     successfulJumps++;
 
                     if (successfulJumps >= maxJumps)
